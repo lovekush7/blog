@@ -7,6 +7,11 @@ const User = require('../models/User');
 
 exports.getUsers = asyncHandler(async(req, res, next) => {
     const user = await User.find();
+
+    if (req.user.role !== 'admin') {
+        return next(new ErrorResponse(`User ${req.user.id} is not authorized to access this route`, 401));
+    }
+
     res.status(200).json({
         success: true,
         count: user.length,
